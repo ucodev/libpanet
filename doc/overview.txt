@@ -1,0 +1,37 @@
+1. Project name, Licensing and Documentation
+
+  1. Portable Abstracted Network Library (libnet)
+
+  2. Home page: http://www.ucodev.org
+
+  3. Licensed under GNU General Public License version 3. Please read the
+     LICENSE file located at the project base directory.
+
+  4. Refer to header files at src/ directory for interface documentation.
+
+  5. Doxygen (www.doxygen.org) compatible documentation.
+
+
+II. Compliance and Portability
+
+  1. POSIX.1-2001 and POSIX.1-2008 compliant.
+
+  2. Written in C programming language and should be compiled by C11 or C99
+     compliant compilers.
+
+  3. Compatible with C++ compilers confirming to C++03 or C++11.
+
+  4. Compatible with Microsoft Windows operating systems since Microsoft
+     Windows XP.
+
+
+III. Notes
+
+  None
+
+
+IV. Examples
+
+  1. Check example/ directory on the project base directory.
+
+
