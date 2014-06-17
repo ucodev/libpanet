@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Low Level Interface
  *
- * Date: 13-10-2012
+ * Date: 17-06-2014
  * 
- * Copyright 2012 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -42,7 +42,62 @@ int panet_safe_close(sock_t fd) {
 	return ret;
 }
 
-sock_t panet_bind(
+static sock_t _panet_bind_unix(
+		const char *path,
+		int socktype)
+{
+#if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
+	/* Not available on windows platforms */
+	errno = ENOSYS;
+	return -1;
+#else
+	sock_t fd = 0;
+	size_t len = 0;
+	int errsv = 0;
+	struct sockaddr_un saddr;
+
+	memset(&saddr, 0, sizeof(struct sockaddr_un));
+
+	if ((fd = socket(AF_UNIX, socktype, 0)) < 0)
+		return -1;
+
+	len = strlen(path);
+
+	if ((len + 1) > sizeof(saddr.sun_path)) {
+		panet_safe_close(fd);
+		errno = EOVERFLOW;
+		return -1;
+	}
+
+	saddr.sun_family = AF_UNIX;
+	strcpy(saddr.sun_path, path);
+
+	if (unlink(saddr.sun_path) < 0) {
+		/* Fail only if there's a privilege issue */
+		if ((errno == EACCES) || (errno == EPERM)) {
+			errsv = errno;
+			panet_safe_close(fd);
+			errno = errsv;
+			return -1;
+		}
+
+		errno = 0;
+	}
+
+	len += sizeof(saddr.sun_family);
+
+	if (bind(fd, (struct sockaddr *) &saddr, len) < 0) {
+		errsv = errno;
+		panet_safe_close(fd);
+		errno = errsv;
+		return -1;
+	}
+
+	return fd;
+#endif
+}
+
+static sock_t _panet_bind_inet(
 		const char *host,
 		const char *service,
 		int sockfamily,
@@ -88,6 +143,21 @@ sock_t panet_bind(
 	return fd;
 }
 
+sock_t panet_bind(
+		const char *host,
+		const char *service,
+		const char *path,
+		int sockfamily,
+		int socktype)
+{
+	switch (sockfamily) {
+		case AF_INET: return _panet_bind_inet(host, service, sockfamily, socktype);
+		case AF_UNIX: return _panet_bind_unix(path, socktype);
+	}
+
+	return -1;
+}
+
 int panet_listen(sock_t fd, int backlog) {
 	int errsv = 0;
 
@@ -101,7 +171,71 @@ int panet_listen(sock_t fd, int backlog) {
 	return 0;
 }
 
-sock_t panet_connect(
+static sock_t _panet_connect_unix(
+		const char *path,
+		long timeout,
+		int socktype)
+{
+#if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
+	/* Not available on windows platforms */
+	errno = ENOSYS;
+	return -1;
+#else
+	sock_t fd = 0;
+	size_t len = 0;
+	int errsv = 0;
+	struct sockaddr_un saddr;
+	struct timeval tvto;
+
+	memset(&saddr, 0, sizeof(struct sockaddr_un));
+
+	if ((fd = socket(AF_UNIX, socktype, 0)) < 0)
+		return -1;
+
+	len = strlen(path);
+
+	if ((len + 1) > sizeof(saddr.sun_path)) {
+		panet_safe_close(fd);
+		errno = EOVERFLOW;
+		return -1;
+	}
+
+	saddr.sun_family = AF_UNIX;
+	strcpy(saddr.sun_path, path);
+
+	len += sizeof(saddr.sun_family);
+
+	if ((socktype != SOCK_DGRAM) && (timeout > 0)) {
+		tvto.tv_sec = timeout;
+		tvto.tv_usec = 0;
+
+		if (panet_timeout_set(fd, PANET_RECV, &tvto) < 0) {
+			errsv = errno;
+			panet_safe_close(fd);
+			errno = errsv;
+			return -1;
+		}
+	}
+
+	if (connect(fd, (struct sockaddr *) &saddr, len) < 0) {
+		errsv = errno;
+		panet_safe_close(fd);
+		errno = errsv;
+		return -1;
+	}
+
+	if ((socktype != SOCK_DGRAM) && (timeout > 0) && panet_timeout_set(fd, PANET_RECV, &tvto) < 0) {
+		errsv = errno;
+		panet_safe_close(fd);
+		errno = errsv;
+		return -1;
+	}
+
+	return fd;
+#endif
+}
+
+static sock_t _panet_connect_inet(
 		const char *host,
 		const char *service,
 		long timeout,
@@ -127,30 +261,38 @@ sock_t panet_connect(
 		if ((fd = socket(rcur->ai_family, rcur->ai_socktype, rcur->ai_protocol)) < 0)
 			continue;
 
-		if (timeout > 0) {
+		if ((socktype != SOCK_DGRAM) && (timeout > 0)) {
 			tvto.tv_sec = timeout;
 			tvto.tv_usec = 0;
 
 			if (panet_timeout_set(fd, PANET_RECV, &tvto) < 0) {
+				errsv = errno;
 				panet_safe_close(fd);
+				errno = errsv;
 				continue;
 			}
 		}
 
 		if (connect(fd, rcur->ai_addr, rcur->ai_addrlen) < 0) {
+			errsv = errno;
 			panet_safe_close(fd);
+			errno = errsv;
 			continue;
 		}
 
 		break;
 	}
 
+	errsv = errno;
+
 	freeaddrinfo(rlist);
 
-	if (!rcur)
+	if (!rcur) {
+		errno = errsv;
 		return -1;
+	}
 
-	if (panet_timeout_set(fd, PANET_RECV, &tvto) < 0) {
+	if ((socktype != SOCK_DGRAM) && (timeout > 0) && panet_timeout_set(fd, PANET_RECV, &tvto) < 0) {
 		errsv = errno;
 		panet_safe_close(fd);
 		errno = errsv;
@@ -158,5 +300,21 @@ sock_t panet_connect(
 	}
 
 	return fd;
+}
+
+sock_t panet_connect(
+		const char *host,
+		const char *service,
+		const char *path,
+		long timeout,
+		int sockfamily,
+		int socktype)
+{
+	switch (sockfamily) {
+		case AF_INET: return _panet_connect_inet(host, service, timeout, sockfamily, socktype);
+		case AF_UNIX: return _panet_connect_unix(path, timeout, socktype);
+	}
+
+	return -1;
 }
 

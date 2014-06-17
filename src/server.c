@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Server Interface
  *
- * Date: 05-10-2012
+ * Date: 17-06-2014
  * 
- * Copyright 2012 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -29,6 +29,31 @@
 
 #include "panet.h"
 
+sock_t panet_server_unix(
+		const char *path,
+		int proto,
+		int backlog)
+{
+	sock_t fd;
+	int socktype = 0;
+
+	switch (proto) {
+		case PANET_PROTO_UNIX_STREAM: socktype = SOCK_STREAM; break;
+		case PANET_PROTO_UNIX_DGRAM: socktype = SOCK_DGRAM; break;
+		default: errno = EINVAL; return -1;
+	}
+
+	if ((fd = panet_bind(NULL, NULL, path, AF_UNIX, socktype)) < 0)
+		return -1;
+
+	if (proto == PANET_PROTO_UNIX_STREAM) {
+		if (panet_listen(fd, backlog) < 0)
+			return -1;
+	}
+
+	return fd;
+}
+
 
 sock_t panet_server_ipv4(
 		const char *host,
@@ -45,8 +70,7 @@ sock_t panet_server_ipv4(
 		default: errno = EINVAL; return -1;
 	}
 
-
-	if ((fd = panet_bind(host, service, AF_INET, socktype)) < 0)
+	if ((fd = panet_bind(host, service, NULL, AF_INET, socktype)) < 0)
 		return -1;
 
 	if (proto == PANET_PROTO_TCP) {
@@ -72,7 +96,7 @@ sock_t panet_server_ipv6(
 		default: errno = EINVAL; return -1;
 	}
 
-	if ((fd = panet_bind(host, service, AF_INET6, socktype)) < 0)
+	if ((fd = panet_bind(host, service, NULL, AF_INET6, socktype)) < 0)
 		return -1;
 
 	if (proto == PANET_PROTO_TCP) {
@@ -98,7 +122,7 @@ sock_t panet_server(
 		default: errno = EINVAL; return -1;
 	}
 
-	if ((fd = panet_bind(host, service, AF_UNSPEC, socktype)) < 0)
+	if ((fd = panet_bind(host, service, NULL, AF_UNSPEC, socktype)) < 0)
 		return -1;
 
 	if (proto == PANET_PROTO_TCP) {

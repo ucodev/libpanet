@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Client Interface
  *
- * Date: 05-10-2012
+ * Date: 17-06-2014
  * 
- * Copyright 2012 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -29,6 +29,21 @@
 
 #include "panet.h"
 
+sock_t panet_client_unix(
+		const char *path,
+		int proto,
+		long timeout)
+{
+	int socktype = 0;
+
+	switch (proto) {
+		case PANET_PROTO_UNIX_STREAM: socktype = SOCK_STREAM; break;
+		case PANET_PROTO_UNIX_DGRAM: socktype = SOCK_DGRAM; break;
+		default: errno = EINVAL; return -1;
+	}
+
+	return panet_connect(NULL, NULL, path, timeout, AF_UNIX, socktype);
+}
 
 sock_t panet_client_ipv4(
 		const char *host,
@@ -44,7 +59,7 @@ sock_t panet_client_ipv4(
 		default: errno = EINVAL; return -1;
 	}
 
-	return panet_connect(host, service, timeout, AF_INET, socktype);
+	return panet_connect(host, service, NULL, timeout, AF_INET, socktype);
 }
 
 sock_t panet_client_ipv6(
@@ -61,7 +76,7 @@ sock_t panet_client_ipv6(
 		default: errno = EINVAL; return -1;
 	}
 
-	return panet_connect(host, service, timeout, AF_INET6, socktype);
+	return panet_connect(host, service, NULL, timeout, AF_INET6, socktype);
 }
 
 sock_t panet_client(
@@ -78,7 +93,7 @@ sock_t panet_client(
 		default: errno = EINVAL; return -1;
 	}
 
-	return panet_connect(host, service, timeout, AF_UNSPEC, socktype);
+	return panet_connect(host, service, NULL, timeout, AF_UNSPEC, socktype);
 }
 
 

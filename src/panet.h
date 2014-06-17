@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Interface Header
  *
- * Date: 14-05-2014
+ * Date: 17-06-2014
  * 
  * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -40,6 +40,7 @@
   #include <unistd.h>
   #include <sys/types.h>
   #include <sys/socket.h>
+  #include <sys/un.h>
   #include <netdb.h>
   #include <arpa/inet.h>
 
@@ -50,7 +51,9 @@
 
 enum {
 	PANET_PROTO_TCP = 1,
-	PANET_PROTO_UDP
+	PANET_PROTO_UDP,
+	PANET_PROTO_UNIX_STREAM,
+	PANET_PROTO_UNIX_DGRAM
 };
 
 enum {
@@ -103,15 +106,48 @@ int panet_safe_close(sock_t fd);
 sock_t panet_bind(
 		const char *host,
 		const char *service,
+		const char *path,
 		int sockfamily,
 		int socktype);
 int panet_listen(sock_t fd, int backlog);
 sock_t panet_connect(
 		const char *host,
 		const char *service,
+		const char *path,
 		long timeout,
 		int sockfamily,
 		int socktype);
+
+/**
+ * @brief
+ *   Initiate a UNIX socket connection to named socket 'path' with 'proto'
+ *   defining its behaviour: For streaming PANET_PROTO_UNIX_STREAM should
+ *   be used, otherwise PANET_PROTO_UNIX_DGRAM is available for datagram
+ *   based socket communications.
+ *
+ * @param path
+ *   Path of the target named socket.
+ *
+ * @param proto
+ *   Protocol: PANET_PROTO_UNIX_STREAM or PANET_PROTO_UNIX_DGRAM
+ *
+ * @param timeout
+ *   Time to wait before give up on connect(). The value is in seconds. This
+ *   value is ignored when PANET_PROTO_UNIX_DGRAM is set on 'proto'.
+ *
+ * @return
+ *   Returns a file descriptor on success. On error, -1 is returned and errno
+ *   is set appropriately.
+ *
+ * @see panet_client_ipv4()
+ * @see panet_client_ipv6()
+ * @see panet_safe_close()
+ *
+ */
+sock_t panet_client_unix(
+		const char *path,
+		int proto,
+		long timeout);
 
 /**
  * @brief
@@ -215,6 +251,38 @@ sock_t panet_client(
 		const char *service,
 		int proto,
 		long timeout);
+
+/**
+ * @brief
+ *   Initiate a UNIX named socket 'path' with 'proto' defining its behaviour:
+ *   For streaming PANET_PROTO_UNIX_STREAM should be used, otherwise
+ *   PANET_PROTO_UNIX_DGRAM is available for datagram based socket
+ *   communications.
+ *
+ * @param path
+ *   Path of the target named socket.
+ *
+ * @param proto
+ *   Protocol: PANET_PROTO_UNIX_STREAM or PANET_PROTO_UNIX_DGRAM
+ * 
+ * @param backlog
+ *   listen() backlog parameter. This value is ignored when PANET_PROTO_UDP
+ *   value is used on 'proto' parameter.
+ 
+ * @return
+ *   Returns a file descriptor on success. On error, -1 is returned and errno
+ *   is set appropriately.
+ *
+ * @see panet_server()
+ * @see panet_server_ipv4()
+ * @see panet_server_ipv6()
+ * @see panet_safe_close()
+ *
+ */
+sock_t panet_server_unix(
+		const char *path,
+		int proto,
+		int backlog);
 
 /**
  * @brief
