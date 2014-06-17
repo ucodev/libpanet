@@ -22,14 +22,14 @@ int main(void) {
 		return 1;
 	}
 
-	if (recv(fd_acpt, data, 14, 0) != 14) {
+	if (read(fd_acpt, data, 14) != 14) {
 		fprintf(stderr, "read() error: %s\n", strerror(errno));
 		panet_safe_close(fd_acpt);
 		panet_safe_close(fd);
 		return 1;
 	}
 
-	if (send(fd_acpt, "Hello Client!", 14, 0) != 14) {
+	if (write(fd_acpt, "Hello Client!", 14) != 14) {
 		fprintf(stderr, "write() error: %s\n", strerror(errno));
 		panet_safe_close(fd_acpt);
 		panet_safe_close(fd);

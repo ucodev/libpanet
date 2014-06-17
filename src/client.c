@@ -31,8 +31,7 @@
 
 sock_t panet_client_unix(
 		const char *path,
-		int proto,
-		long timeout)
+		int proto)
 {
 	int socktype = 0;
 
@@ -42,7 +41,7 @@ sock_t panet_client_unix(
 		default: errno = EINVAL; return -1;
 	}
 
-	return panet_connect(NULL, NULL, path, timeout, AF_UNIX, socktype);
+	return panet_connect(NULL, NULL, path, 0, AF_UNIX, socktype);
 }
 
 sock_t panet_client_ipv4(

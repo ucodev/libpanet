@@ -173,7 +173,6 @@ int panet_listen(sock_t fd, int backlog) {
 
 static sock_t _panet_connect_unix(
 		const char *path,
-		long timeout,
 		int socktype)
 {
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
@@ -185,7 +184,6 @@ static sock_t _panet_connect_unix(
 	size_t len = 0;
 	int errsv = 0;
 	struct sockaddr_un saddr;
-	struct timeval tvto;
 
 	memset(&saddr, 0, sizeof(struct sockaddr_un));
 
@@ -205,26 +203,7 @@ static sock_t _panet_connect_unix(
 
 	len += sizeof(saddr.sun_family);
 
-	if ((socktype != SOCK_DGRAM) && (timeout > 0)) {
-		tvto.tv_sec = timeout;
-		tvto.tv_usec = 0;
-
-		if (panet_timeout_set(fd, PANET_RECV, &tvto) < 0) {
-			errsv = errno;
-			panet_safe_close(fd);
-			errno = errsv;
-			return -1;
-		}
-	}
-
 	if (connect(fd, (struct sockaddr *) &saddr, len) < 0) {
-		errsv = errno;
-		panet_safe_close(fd);
-		errno = errsv;
-		return -1;
-	}
-
-	if ((socktype != SOCK_DGRAM) && (timeout > 0) && panet_timeout_set(fd, PANET_RECV, &tvto) < 0) {
 		errsv = errno;
 		panet_safe_close(fd);
 		errno = errsv;
@@ -312,7 +291,7 @@ sock_t panet_connect(
 {
 	switch (sockfamily) {
 		case AF_INET: return _panet_connect_inet(host, service, timeout, sockfamily, socktype);
-		case AF_UNIX: return _panet_connect_unix(path, timeout, socktype);
+		case AF_UNIX: return _panet_connect_unix(path, socktype);
 	}
 
 	return -1;

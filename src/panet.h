@@ -131,10 +131,6 @@ sock_t panet_connect(
  * @param proto
  *   Protocol: PANET_PROTO_UNIX_STREAM or PANET_PROTO_UNIX_DGRAM
  *
- * @param timeout
- *   Time to wait before give up on connect(). The value is in seconds. This
- *   value is ignored when PANET_PROTO_UNIX_DGRAM is set on 'proto'.
- *
  * @return
  *   Returns a file descriptor on success. On error, -1 is returned and errno
  *   is set appropriately.
@@ -146,8 +142,7 @@ sock_t panet_connect(
  */
 sock_t panet_client_unix(
 		const char *path,
-		int proto,
-		long timeout);
+		int proto);
 
 /**
  * @brief
