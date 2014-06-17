@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Interface Header
  *
- * Date: 17-06-2014
+ * Date: 18-06-2014
  * 
  * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -37,6 +37,7 @@
 
   #define panet_close(fd) _close(fd)
  #else
+  #include <errno.h>
   #include <unistd.h>
   #include <sys/types.h>
   #include <sys/socket.h>
