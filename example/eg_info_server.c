@@ -6,7 +6,7 @@
 #include "panet.h"
 
 int main(void) {
-	int fd, fd_acpt;
+	int fd, fd_acpt, family;
 	char data[14];
 	struct sockaddr_storage addr;
 	socklen_t alen = sizeof(struct sockaddr_storage);
@@ -14,7 +14,7 @@ int main(void) {
 
 	memset(data, 0, 14);
 
-	if ((fd = panet_server("localhost", "9876", PANET_PROTO_TCP, 10)) < 0) {
+	if ((fd = panet_server_ipv4("localhost", "9876", PANET_PROTO_TCP, 10)) < 0) {
 		fprintf(stderr, "panet_server() error: %s\n", strerror(errno));
 		return 1;
 	}
@@ -46,9 +46,15 @@ int main(void) {
 		return 1;
 	}
 
-	printf("Received: '%s' from client (address: '%s', port: '%s').\n", data, host, service);
+	if ((family = panet_info_sock_family(fd_acpt)) < 0) {
+		fprintf(stderr, "panet_info_sock_family() error: %s\n", strerror(errno));
+		panet_safe_close(fd_acpt);
+		panet_safe_close(fd);
+	}
 
-	panet_info_free(host, service);
+	printf("Received: '%s' from client (address: '%s', port: '%s', family: '%d').\n", data, host, service, family);
+
+	panet_info_addr_free(host, service);
 
 	panet_safe_close(fd_acpt);
 	panet_safe_close(fd);

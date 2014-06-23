@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Info Interface
  *
- * Date: 14-05-2014
+ * Date: 22-06-2014
  * 
  * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -31,7 +31,6 @@
 
 #include "mm.h"
 #include "panet.h"
-
 
 int panet_info_addr(
 		struct sockaddr *addr,
@@ -70,7 +69,7 @@ int panet_info_addr(
 
 }
 
-int panet_info_sock(sock_t fd, char **host, char **service, int flags) {
+int panet_info_sock_addr(sock_t fd, char **host, char **service, int flags) {
 	struct sockaddr_storage addr;
 	socklen_t alen = sizeof(struct sockaddr_storage);
 
@@ -80,11 +79,21 @@ int panet_info_sock(sock_t fd, char **host, char **service, int flags) {
 	return panet_info_addr((struct sockaddr *) &addr, alen, host, service, flags);
 }
 
-void panet_info_free(char *host, char *service) {
+void panet_info_addr_free(char *host, char *service) {
 	if (host)
 		mm_free(host);
 
 	if (service)
 		mm_free(service);
+}
+
+int panet_info_sock_family(sock_t fd) {
+	struct sockaddr_storage addr;
+	socklen_t alen = sizeof(struct sockaddr_storage);
+
+	if (getsockname(fd, (struct sockaddr *) &addr, &alen) < 0)
+		return -1;
+
+	return ((struct sockaddr *) &addr)->sa_family;
 }
 

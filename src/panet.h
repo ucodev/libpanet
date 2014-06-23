@@ -447,10 +447,10 @@ int panet_info_addr(
  *   allocated through malloc() (or fsma_malloc() if libfsma is used).
  *
  * @see panet_info_addr()
- * @see panet_info_free()
+ * @see panet_info_addr_free()
  *
  */
-int panet_info_sock(sock_t fd, char **host, char **service, int flags);
+int panet_info_sock_addr(sock_t fd, char **host, char **service, int flags);
 
 /**
  * @brief
@@ -468,7 +468,25 @@ int panet_info_sock(sock_t fd, char **host, char **service, int flags);
  * @see panet_info_sock()
  *
  */
-void panet_info_free(char *host, char *service);
+void panet_info_addr_free(char *host, char *service);
+
+/**
+ * @brief
+ *   Retrieves the socket family of the socket described by file
+ *   descriptor 'fd'
+ *
+ * @param fd
+ *   Socket file descriptor.
+ *
+ * @return
+ *   Returns zero on success. On error, -1 is returned and errno is set
+ *   appropriately.
+ *
+ * @see panet_info_addr()
+ * @see panet_info_sock_addr()
+ *
+ */
+int panet_info_sock_family(sock_t fd);
 
 /**
  * @brief

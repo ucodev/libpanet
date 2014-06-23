@@ -11,7 +11,7 @@ int main(void) {
 
 	memset(data, 0, 14);
 
-	if ((fd = panet_client("localhost", "9876", PANET_PROTO_TCP, 5)) < 0) {
+	if ((fd = panet_client_ipv4("localhost", "9876", PANET_PROTO_TCP, 5)) < 0) {
 		fprintf(stderr, "panet_client() error: %s\n", strerror(errno));
 		return 1;
 	}
