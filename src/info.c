@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Info Interface
  *
- * Date: 22-06-2014
+ * Date: 25-08-2014
  * 
  * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -57,7 +57,7 @@ int panet_info_addr(
 	if (service) {
 		if (!(*service = (char *) mm_alloc(strlen(tservice) + 1))) {
 			errsv = errno;
-			mm_free(*host);
+			if (host) mm_free(*host);
 			errno = errsv;
 			return -1;
 		}
