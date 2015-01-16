@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Server Interface
  *
- * Date: 17-06-2014
+ * Date: 16-01-2015
  * 
- * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <errno.h>
 
+#include "config.h"
 #include "panet.h"
 
 sock_t panet_server_unix(

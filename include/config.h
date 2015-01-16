@@ -1,11 +1,11 @@
 /**
- * @file mm.h
+ * @file config.h
  * @brief Portable Abstracted Network Library (libpanet)
- *        Memory Management interface header
+ *        Configuration header
  *
- * Date: 16-05-2014
+ * Date: 16-01-2015
  * 
- * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -25,16 +25,12 @@
  */
 
 
-#ifndef LIBPANET_MM_H
-#define LIBPANET_MM_H
+#ifndef LIBPANET_CONFIG_H
+#define LIBPANET_CONFIG_H
 
-#ifdef USE_LIBFSMA
- #include <fsma/fsma.h>
+#if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
+#define COMPILE_WIN32
 #endif
 
-void *mm_alloc(size_t size);
-void mm_free(void *ptr);
-void *mm_realloc(void *ptr, size_t size);
-void *mm_calloc(size_t nmemb, size_t size);
-
 #endif
+

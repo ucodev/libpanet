@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        Memory Management interface
  *
- * Date: 16-05-2014
+ * Date: 16-01-2015
  * 
- * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -25,6 +25,8 @@
  */
 
 #include <stdlib.h>
+
+#include "config.h"
 
 #ifdef USE_LIBFSMA
  #include <fsma/fsma.h>

@@ -1,7 +1,7 @@
 /**
- * @file timeout.c
+ * @file mm.h
  * @brief Portable Abstracted Network Library (libpanet)
- *        PANET Library Timeout Interface
+ *        Memory Management interface header
  *
  * Date: 16-01-2015
  * 
@@ -24,37 +24,19 @@
  *
  */
 
-#include <stdio.h>
-#include <errno.h>
+
+#ifndef LIBPANET_MM_H
+#define LIBPANET_MM_H
 
 #include "config.h"
-#include "panet.h"
 
+#ifdef USE_LIBFSMA
+ #include <fsma/fsma.h>
+#endif
 
-int panet_timeout_set(sock_t fd, int direction, struct timeval *timeo) {
-	struct timeval tvnew = *timeo;
-	socklen_t tv_size = sizeof(struct timeval);
-	int optname = 0;
+void *mm_alloc(size_t size);
+void mm_free(void *ptr);
+void *mm_realloc(void *ptr, size_t size);
+void *mm_calloc(size_t nmemb, size_t size);
 
-	if (!timeo)
-		return 0;
-
-	switch (direction) {
-		case PANET_RECV: optname = SO_RCVTIMEO; break;
-		case PANET_SEND: optname = SO_SNDTIMEO; break;
-		default: errno = EINVAL; return -1;
-	}
-
-	if (getsockopt(fd, SOL_SOCKET, optname, (void *) timeo, &tv_size) < 0) {
-		*timeo = tvnew;
-		return -1;
-	}
-
-	if (setsockopt(fd, SOL_SOCKET, optname, (void *) &tvnew, sizeof(struct timeval)) < 0) {
-		*timeo = tvnew;
-		return -1;
-	}
-
-	return 0;
-}
-
+#endif

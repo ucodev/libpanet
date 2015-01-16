@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Low Level Interface
  *
- * Date: 17-06-2014
+ * Date: 16-01-2015
  * 
- * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -28,6 +28,7 @@
 #include <string.h>
 #include <errno.h>
 
+#include "config.h"
 #include "panet.h"
 
 
@@ -46,7 +47,7 @@ static sock_t _panet_bind_unix(
 		const char *path,
 		int socktype)
 {
-#if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
+#ifdef COMPILE_WIN32
 	/* Not available on windows platforms */
 	errno = ENOSYS;
 	return -1;
@@ -175,7 +176,7 @@ static sock_t _panet_connect_unix(
 		const char *path,
 		int socktype)
 {
-#if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
+#ifdef COMPILE_WIN32
 	/* Not available on windows platforms */
 	errno = ENOSYS;
 	return -1;

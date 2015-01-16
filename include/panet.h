@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Interface Header
  *
- * Date: 18-06-2014
+ * Date: 16-01-2015
  * 
- * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -27,7 +27,9 @@
 #ifndef LIBPANET_H
 #define LIBPANET_H
 
- #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
+#include "config.h"
+
+ #ifdef COMPILE_WIN32
   #include <windows.h>
   #include <winsock2.h>
   #include <Ws2tcpip.h>

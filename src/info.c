@@ -3,9 +3,9 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Info Interface
  *
- * Date: 25-08-2014
+ * Date: 16-01-2015
  * 
- * Copyright 2012-2014 Pedro A. Hortas (pah@ucodev.org)
+ * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
  * This file is part of libpanet.
  *
@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <errno.h>
 
+#include "config.h"
 #include "mm.h"
 #include "panet.h"
 
