@@ -1,0 +1,48 @@
+# Project: libpanet
+# Makefile created by Dev-C++ 5.8.3
+
+CPP      = g++.exe
+CC       = gcc.exe
+WINDRES  = windres.exe
+OBJ      = dllmain.o ../src/client.o ../src/info.o ../src/low.o ../src/mm.o ../src/server.o ../src/timeout.o
+LINKOBJ  = dllmain.o ../src/client.o ../src/info.o ../src/low.o ../src/mm.o ../src/server.o ../src/timeout.o
+LIBS     = -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib" -L"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc -lws2_32
+INCS     = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"../include"
+CXXINCS  = -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include" -I"C:/Program Files (x86)/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.8.1/include/c++" -I"../include"
+BIN      = libpanet.dll
+CXXFLAGS = $(CXXINCS) -DBUILDING_DLL=1 -DCOMPILE_WIN32=1
+CFLAGS   = $(INCS) -DBUILDING_DLL=1 -DCOMPILE_WIN32=1
+RM       = rm.exe -f
+DEF      = liblibpanet.def
+STATIC   = liblibpanet.a
+
+.PHONY: all all-before all-after clean clean-custom
+
+all: all-before $(BIN) all-after
+
+clean: clean-custom
+	${RM} $(OBJ) $(BIN) $(DEF) $(STATIC)
+
+$(BIN): $(LINKOBJ)
+	$(CC) -shared $(LINKOBJ) -o $(BIN) $(LIBS) -Wl,--output-def,$(DEF),--out-implib,$(STATIC),--add-stdcall-alias
+
+dllmain.o: dllmain.c
+	$(CC) -c dllmain.c -o dllmain.o $(CFLAGS)
+
+../src/client.o: ../src/client.c
+	$(CC) -c ../src/client.c -o ../src/client.o $(CFLAGS)
+
+../src/info.o: ../src/info.c
+	$(CC) -c ../src/info.c -o ../src/info.o $(CFLAGS)
+
+../src/low.o: ../src/low.c
+	$(CC) -c ../src/low.c -o ../src/low.o $(CFLAGS)
+
+../src/mm.o: ../src/mm.c
+	$(CC) -c ../src/mm.c -o ../src/mm.o $(CFLAGS)
+
+../src/server.o: ../src/server.c
+	$(CC) -c ../src/server.c -o ../src/server.o $(CFLAGS)
+
+../src/timeout.o: ../src/timeout.c
+	$(CC) -c ../src/timeout.c -o ../src/timeout.o $(CFLAGS)

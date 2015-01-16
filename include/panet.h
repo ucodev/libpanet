@@ -30,8 +30,8 @@
 #include "config.h"
 
  #ifdef COMPILE_WIN32
-  #include <windows.h>
   #include <winsock2.h>
+  #include <windows.h>
   #include <Ws2tcpip.h>
   #include <io.h>
 
@@ -80,8 +80,15 @@ static inline int panet_eai_to_errno(int eia_err) {
  #endif
 		case EAI_NONAME: return EINVAL;
 		case EAI_SERVICE: return EINVAL;
-		case EAI_SOCKTYPE: return ESOCKTNOSUPPORT;
+		case EAI_SOCKTYPE: return
+ #ifdef ESOCKTNOSUPPORT
+							ESOCKTNOSUPPORT;
+ #else
+							EINVAL;
+ #endif
+ #ifdef EAI_SYSTEM
 		case EAI_SYSTEM:
+ #endif
 #endif
 		default: return errno;
 	}
@@ -104,15 +111,29 @@ static inline int panet_eai_to_errno(int eia_err) {
  *   appropriately.
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_safe_close(sock_t fd);
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_bind(
 		const char *host,
 		const char *service,
 		const char *path,
 		int sockfamily,
 		int socktype);
+
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_listen(sock_t fd, int backlog);
+
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_connect(
 		const char *host,
 		const char *service,
@@ -143,6 +164,9 @@ sock_t panet_connect(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_client_unix(
 		const char *path,
 		int proto);
@@ -175,6 +199,9 @@ sock_t panet_client_unix(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_client_ipv4(
 		const char *host,
 		const char *service,
@@ -209,6 +236,9 @@ sock_t panet_client_ipv4(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_client_ipv6(
 		const char *host,
 		const char *service,
@@ -244,6 +274,9 @@ sock_t panet_client_ipv6(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_client(
 		const char *host,
 		const char *service,
@@ -277,6 +310,9 @@ sock_t panet_client(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server_unix(
 		const char *path,
 		int proto,
@@ -311,6 +347,9 @@ sock_t panet_server_unix(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server_ipv4(
 		const char *host,
 		const char *service,
@@ -346,6 +385,9 @@ sock_t panet_server_ipv4(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server_ipv6(
 		const char *host,
 		const char *service,
@@ -382,6 +424,9 @@ sock_t panet_server_ipv6(
  * @see panet_safe_close()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server(
 		const char *host,
 		const char *service,
@@ -418,6 +463,9 @@ sock_t panet_server(
  * @see panet_info_free()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_info_addr(
 		struct sockaddr *addr,
 		socklen_t alen,
@@ -452,6 +500,9 @@ int panet_info_addr(
  * @see panet_info_addr_free()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_info_sock_addr(sock_t fd, char **host, char **service, int flags);
 
 /**
@@ -470,6 +521,9 @@ int panet_info_sock_addr(sock_t fd, char **host, char **service, int flags);
  * @see panet_info_sock()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 void panet_info_addr_free(char *host, char *service);
 
 /**
@@ -488,6 +542,9 @@ void panet_info_addr_free(char *host, char *service);
  * @see panet_info_sock_addr()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_info_sock_family(sock_t fd);
 
 /**
@@ -515,6 +572,9 @@ int panet_info_sock_family(sock_t fd);
  * @see panet_client_ipv6()
  *
  */
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_timeout_set(sock_t fd, int direction, struct timeval *timeo);
 
 #endif

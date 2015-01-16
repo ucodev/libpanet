@@ -29,7 +29,14 @@
 #define LIBPANET_CONFIG_H
 
 #if defined(WIN32) || defined(_WIN32) || defined(WIN64) || defined (_WIN64)
-#define COMPILE_WIN32
+ #ifndef COMPILE_WIN32
+  #define COMPILE_WIN32
+ #endif
+ #if BUILDING_DLL
+  #define DLLIMPORT __declspec(dllexport)
+ #else
+  #define DLLIMPORT __declspec(dllimport)
+ #endif
 #endif
 
 #endif

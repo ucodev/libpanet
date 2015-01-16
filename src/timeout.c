@@ -30,7 +30,9 @@
 #include "config.h"
 #include "panet.h"
 
-
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_timeout_set(sock_t fd, int direction, struct timeval *timeo) {
 	struct timeval tvnew = *timeo;
 	socklen_t tv_size = sizeof(struct timeval);

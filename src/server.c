@@ -30,6 +30,9 @@
 #include "config.h"
 #include "panet.h"
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server_unix(
 		const char *path,
 		int proto,
@@ -55,7 +58,9 @@ sock_t panet_server_unix(
 	return fd;
 }
 
-
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server_ipv4(
 		const char *host,
 		const char *service,
@@ -82,6 +87,9 @@ sock_t panet_server_ipv4(
 	return fd;
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server_ipv6(
 		const char *host,
 		const char *service,
@@ -108,6 +116,9 @@ sock_t panet_server_ipv6(
 	return fd;
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_server(
 		const char *host,
 		const char *service,

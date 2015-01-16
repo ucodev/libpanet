@@ -31,7 +31,9 @@
 #include "config.h"
 #include "panet.h"
 
-
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_safe_close(sock_t fd) {
 	int ret = 0;
 
@@ -144,6 +146,9 @@ static sock_t _panet_bind_inet(
 	return fd;
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_bind(
 		const char *host,
 		const char *service,
@@ -159,6 +164,9 @@ sock_t panet_bind(
 	return -1;
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_listen(sock_t fd, int backlog) {
 	int errsv = 0;
 
@@ -282,6 +290,9 @@ static sock_t _panet_connect_inet(
 	return fd;
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 sock_t panet_connect(
 		const char *host,
 		const char *service,

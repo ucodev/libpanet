@@ -33,6 +33,9 @@
 #include "mm.h"
 #include "panet.h"
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_info_addr(
 		struct sockaddr *addr,
 		socklen_t alen,
@@ -70,6 +73,9 @@ int panet_info_addr(
 
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_info_sock_addr(sock_t fd, char **host, char **service, int flags) {
 	struct sockaddr_storage addr;
 	socklen_t alen = sizeof(struct sockaddr_storage);
@@ -88,6 +94,9 @@ void panet_info_addr_free(char *host, char *service) {
 		mm_free(service);
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
 int panet_info_sock_family(sock_t fd) {
 	struct sockaddr_storage addr;
 	socklen_t alen = sizeof(struct sockaddr_storage);
