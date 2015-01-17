@@ -24,7 +24,7 @@ HostApplication=
 UseCustomMakefile=0
 CustomMakefile=
 CommandLine=
-Folders=
+Folders=include,src
 IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
@@ -63,7 +63,7 @@ BuildCmd=
 [Unit2]
 FileName=..\src\client.c
 CompileCpp=0
-Folder=
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -73,7 +73,7 @@ BuildCmd=
 [Unit3]
 FileName=..\src\info.c
 CompileCpp=0
-Folder=
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -83,7 +83,7 @@ BuildCmd=
 [Unit4]
 FileName=..\src\low.c
 CompileCpp=0
-Folder=
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -93,7 +93,7 @@ BuildCmd=
 [Unit5]
 FileName=..\src\mm.c
 CompileCpp=0
-Folder=
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -103,7 +103,7 @@ BuildCmd=
 [Unit6]
 FileName=..\src\server.c
 CompileCpp=0
-Folder=
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -113,7 +113,7 @@ BuildCmd=
 [Unit7]
 FileName=..\src\timeout.c
 CompileCpp=0
-Folder=
+Folder=src
 Compile=1
 Link=1
 Priority=1000
@@ -123,7 +123,7 @@ BuildCmd=
 [Unit8]
 FileName=..\include\config.h
 CompileCpp=0
-Folder=
+Folder=include
 Compile=1
 Link=1
 Priority=1000
@@ -133,7 +133,7 @@ BuildCmd=
 [Unit9]
 FileName=..\include\mm.h
 CompileCpp=0
-Folder=
+Folder=include
 Compile=1
 Link=1
 Priority=1000
@@ -143,7 +143,7 @@ BuildCmd=
 [Unit10]
 FileName=..\include\panet.h
 CompileCpp=0
-Folder=
+Folder=include
 Compile=1
 Link=1
 Priority=1000
