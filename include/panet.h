@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Interface Header
  *
- * Date: 16-01-2015
+ * Date: 18-01-2015
  * 
  * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -576,6 +576,16 @@ int panet_info_sock_family(sock_t fd);
 DLLIMPORT
 #endif
 int panet_timeout_set(sock_t fd, int direction, struct timeval *timeo);
+
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
+int panet_read(sock_t fd, void *buf, size_t len);
+
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
+int panet_write(sock_t fd, const void *buf, size_t len);
 
 #endif
 

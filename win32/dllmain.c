@@ -8,10 +8,13 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL,DWORD fdwReason,LPVOID lpvReserved)
 	{
 		case DLL_PROCESS_ATTACH:
 		{
+			WSADATA wsaData;
+			WSAStartup(MAKEWORD(2, 2), &wsaData);
 			break;
 		}
 		case DLL_PROCESS_DETACH:
 		{
+			WSACleanup();
 			break;
 		}
 		case DLL_THREAD_ATTACH:

@@ -317,3 +317,25 @@ sock_t panet_connect(
 	return -1;
 }
 
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
+int panet_read(sock_t fd, void *buf, size_t len) {
+#ifdef COMPILE_WIN32
+	return recv(fd, (char *) buf, len, 0);
+#else
+	return read(fd, buf, len);
+#endif
+}
+
+#ifdef COMPILE_WIN32
+DLLIMPORT
+#endif
+int panet_write(sock_t fd, const void *buf, size_t len) {
+#ifdef COMPILE_WIN32
+	return send(fd, (char *) buf, len, 0);
+#else
+	return write(fd, buf, len);
+#endif
+}
+
