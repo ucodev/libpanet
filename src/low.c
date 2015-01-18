@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Low Level Interface
  *
- * Date: 16-01-2015
+ * Date: 18-01-2015
  * 
  * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -122,7 +122,7 @@ static sock_t _panet_bind_inet(
 	}
 
 	for (rcur = rlist; rcur; rcur = rcur->ai_next) {
-		if ((fd = socket(rcur->ai_family, rcur->ai_socktype, rcur->ai_protocol)) < 0)
+		if ((fd = socket(rcur->ai_family, rcur->ai_socktype, rcur->ai_protocol)) == -1)
 			continue;
 
 		if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (void *) &optval, sizeof(optval)) < 0) {
@@ -158,8 +158,12 @@ sock_t panet_bind(
 {
 	switch (sockfamily) {
 		case AF_INET: return _panet_bind_inet(host, service, sockfamily, socktype);
+#ifndef COMPILE_WIN32
 		case AF_UNIX: return _panet_bind_unix(path, socktype);
+#endif
 	}
+
+	errno = EINVAL;
 
 	return -1;
 }
@@ -246,7 +250,7 @@ static sock_t _panet_connect_inet(
 	}
 
 	for (rcur = rlist; rcur; rcur = rcur->ai_next) {
-		if ((fd = socket(rcur->ai_family, rcur->ai_socktype, rcur->ai_protocol)) < 0)
+		if ((fd = socket(rcur->ai_family, rcur->ai_socktype, rcur->ai_protocol)) == -1)
 			continue;
 
 		if ((socktype != SOCK_DGRAM) && (timeout > 0)) {
@@ -275,7 +279,7 @@ static sock_t _panet_connect_inet(
 
 	freeaddrinfo(rlist);
 
-	if (!rcur) {
+	if (!rcur || (fd == -1)) {
 		errno = errsv;
 		return -1;
 	}
@@ -303,8 +307,12 @@ sock_t panet_connect(
 {
 	switch (sockfamily) {
 		case AF_INET: return _panet_connect_inet(host, service, timeout, sockfamily, socktype);
+#ifndef COMPILE_WIN32
 		case AF_UNIX: return _panet_connect_unix(path, socktype);
+#endif
 	}
+
+	errno = EINVAL;
 
 	return -1;
 }
