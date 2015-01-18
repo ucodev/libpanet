@@ -31,7 +31,7 @@ if [ $? -ne 0 ]; then
 	exit 1;
 fi
 
-cp src/*.h /usr/include/panet/
+cp include/*.h /usr/include/panet/
 
 if [ $? -ne 0 ]; then
 	echo "Failed to copy src/*.h to /usr/include/panet"
