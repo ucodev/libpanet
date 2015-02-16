@@ -203,9 +203,9 @@ static sock_t _panet_connect_unix(
 	if ((fd = socket(AF_UNIX, socktype, 0)) < 0)
 		return -1;
 
-	len = strlen(path);
+	len = strlen(path) + 1;
 
-	if ((len + 1) > sizeof(saddr.sun_path)) {
+	if (len > sizeof(saddr.sun_path)) {
 		panet_safe_close(fd);
 		errno = EOVERFLOW;
 		return -1;
