@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Low Level Interface
  *
- * Date: 18-01-2015
+ * Date: 16-02-2015
  * 
  * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -64,9 +64,9 @@ static sock_t _panet_bind_unix(
 	if ((fd = socket(AF_UNIX, socktype, 0)) < 0)
 		return -1;
 
-	len = strlen(path);
+	len = strlen(path) + 1;
 
-	if ((len + 1) > sizeof(saddr.sun_path)) {
+	if (len > sizeof(saddr.sun_path)) {
 		panet_safe_close(fd);
 		errno = EOVERFLOW;
 		return -1;
