@@ -580,12 +580,12 @@ int panet_timeout_set(sock_t fd, int direction, struct timeval *timeo);
 #ifdef COMPILE_WIN32
 DLLIMPORT
 #endif
-int panet_read(sock_t fd, void *buf, size_t len);
+ssize_t panet_read(sock_t fd, void *buf, size_t len);
 
 #ifdef COMPILE_WIN32
 DLLIMPORT
 #endif
-int panet_write(sock_t fd, const void *buf, size_t len);
+ssize_t panet_write(sock_t fd, const void *buf, size_t len);
 
 #endif
 
