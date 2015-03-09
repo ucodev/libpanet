@@ -3,7 +3,7 @@
  * @brief Portable Abstracted Network Library (libpanet)
  *        PANET Library Interface Header
  *
- * Date: 18-01-2015
+ * Date: 09-03-2015
  * 
  * Copyright 2012-2015 Pedro A. Hortas (pah@ucodev.org)
  *
@@ -34,6 +34,7 @@
   #include <windows.h>
   #include <Ws2tcpip.h>
   #include <io.h>
+  #include <errno.h>
 
   typedef SOCKET sock_t;
 
