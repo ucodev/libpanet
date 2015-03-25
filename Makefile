@@ -18,7 +18,7 @@ install_all:
 	mkdir -p ${SYSLIBDIR}
 	mkdir -p ${SYSINCLUDEDIR}/panet
 	cp src/libpanet.* ${SYSLIBDIR}/
-	cp include/*.h ${SYSINCLUDEDIR}/
+	cp include/*.h ${SYSINCLUDEDIR}/panet/
 
 clean:
 	cd src && make clean && cd ..
